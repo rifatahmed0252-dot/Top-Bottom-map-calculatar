@@ -1,39 +1,198 @@
 <!DOCTYPE html>
-
 <html lang="bn">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta charset="UTF-8">
+<title>মাপ ভাগ করার ক্যালকুলেটর</title>
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*{
+  box-sizing:border-box;
+}
 
-  <title>মাপ ভাগ করার ক্যালকুলেটর</title>
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f2f2f2;
+  color:#222;
+}
 
-  <style>
+.app{
+  max-width:500px;
+  margin:auto;
+  padding:20px;
+}
 
-    * {
+h1{
+  text-align:center;
+  font-size:25px;
+  margin-bottom:20px;
+}
 
-      box-sizing: border-box;
+.card{
+  background:white;
+  padding:20px;
+  border-radius:16px;
+  margin-bottom:15px;
+  box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
 
-    }
+label{
+  display:block;
+  font-weight:bold;
+  margin:12px 0 7px;
+}
 
-    body {
+input{
+  width:100%;
+  padding:14px;
+  font-size:18px;
+  border:1px solid #ccc;
+  border-radius:10px;
+}
 
-      margin: 0;
+button{
+  width:100%;
+  padding:15px;
+  margin-top:18px;
+  border:0;
+  border-radius:10px;
+  background:#111;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+}
 
-      font-family: Arial, sans-serif;
+.result{
+  text-align:center;
+  font-size:24px;
+  font-weight:bold;
+  margin:10px 0 20px;
+}
 
-      background: #f5f5f5;
+.info{
+  text-align:center;
+  color:#666;
+  line-height:1.5;
+}
 
-      color: #222;
+.hidden{
+  display:none;
+}
+</style>
+</head>
 
-    }
+<body>
 
-    .app {
+<div class="app">
 
-      max-width: 500px;
+<h1>📏 মাপ ভাগ করার ক্যালকুলেটর</h1>
 
-      margin: auto;
+<div class="card">
 
-      padding: 20px;
+<label>মোট ইঞ্চি</label>
+<input id="inch" type="number" min="0" step="1" placeholder="যেমন: 40">
+
+<label>সুতা</label>
+<input id="suta" type="number" min="0" max="7.5" step="0.5" placeholder="যেমন: 4">
+
+<button onclick="calculate()">হিসাব করুন</button>
+
+</div>
+
+<div id="resultBox" class="card hidden">
+
+<div class="info">
+১৫ সেমি = ৫ ইঞ্চি ৭.৫ সুতা বাদ দেওয়া হয়েছে
+</div>
+
+<hr>
+
+<p><b>১ম ভাগ:</b></p>
+<div id="result1" class="result"></div>
+
+<p><b>২য় ভাগ:</b></p>
+<div id="result2" class="result"></div>
+
+<div id="details" class="info"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function formatMeasurement(value){
+
+  let inch = Math.floor(value);
+
+  let suta = (value - inch) * 8;
+
+  suta = Math.round(suta * 2) / 2;
+
+  if(suta >= 8){
+    inch++;
+    suta = 0;
+  }
+
+  if(suta === 0){
+    return inch + " ইঞ্চি";
+  }
+
+  return inch + " ইঞ্চি " + suta + " সুতা";
+}
+
+
+function calculate(){
+
+  let inch = parseFloat(
+    document.getElementById("inch").value
+  ) || 0;
+
+  let suta = parseFloat(
+    document.getElementById("suta").value
+  ) || 0;
+
+  if(suta < 0 || suta >= 8){
+
+    alert("সুতা ০ থেকে ৭.৫ এর মধ্যে দিন।");
+    return;
+  }
+
+  // ১ ইঞ্চি = ৮ সুতা
+  let total = inch + (suta / 8);
+
+  // ১৫ সেমি = ৫ ইঞ্চি ৭.৫ সুতা
+  let cut = 5 + (7.5 / 8);
+
+  if(total <= cut){
+
+    alert("মোট মাপ ৫ ইঞ্চি ৭.৫ সুতার বেশি হতে হবে।");
+    return;
+  }
+
+  // ১৫ সেমি বাদ
+  let remaining = total - cut;
+
+  // দুই ভাগ
+  let half = remaining / 2;
+
+  document.getElementById("result1").innerText =
+    formatMeasurement(half);
+
+  document.getElementById("result2").innerText =
+    formatMeasurement(half);
+
+  document.getElementById("details").innerText =
+    "মোট মাপ: " + formatMeasurement(total) +
+    " → ১৫ সেমি বাদ → বাকি অংশ ২ ভাগ";
+
+  document.getElementById("resultBox")
+    .classList.remove("hidden");
+}
+
+</script>
+
+</body>
+</html>
